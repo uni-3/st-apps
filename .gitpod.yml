@@ -2,7 +2,7 @@ checkoutLocation: "st-apps"
 workspaceLocation: "."
 github:
   prebuilds:
-    maip: true
+    main: true
 tasks:
   - before: echo 'export PIP_USER=no' >> ~/.bashrc && source ~/.bashrc
   - init: pip install poetry && poetry config virtualenvs.create true && poetry config virtualenvs.in-project true && poetry env use python && poetry install && pip install -r requirements.txt && pip3 install -r requirements.txt
