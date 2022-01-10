@@ -5,7 +5,7 @@
 #    main: true
 tasks:
   - before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
-  - init: pip install poetry && poetry config virtualenvs.create --local true && poetry config virtualenvs.in-project false && poetry env use python && poetry install && poetry export --without-hashes -f requirements.txt --output requirements.txt && pip install -r requirements.txt
+  - init: pip install poetry && poetry config virtualenvs.create --local true && poetry config virtualenvs.in-project false && poetry env use python && poetry install && poetry export --without-hashes -f requirements.txt --output requirements.txt && pip install --no-deps -r requirements.txt
 vscode:
   extensions:
     - ms-python.python
