@@ -4,8 +4,11 @@
 ##  prebuilds:
 #    main: true
 tasks:
-  - before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
-  - init: pip install poetry && poetry config virtualenvs.create false && poetry config virtualenvs.in-project false && poetry install && poetry export --without-hashes -f requirements.txt --output requirements.txt && pip3 install --no-deps -r requirements.txt
+  - name: poetry
+    before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
+    init: pip install poetry && poetry config virtualenvs.create false && poetry config virtualenvs.in-project false && poetry install && poetry export --without-hashes -f requirements.txt --output requirements.txt && pip3 install --no-deps -r requirements.txt
+  - name: install
+    init: pip install --no-deps -r requirements.txt
 vscode:
   extensions:
     - ms-python.python
