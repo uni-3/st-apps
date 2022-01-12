@@ -3,6 +3,8 @@
 #github:
 ##  prebuilds:
 #    main: true
+image:
+  file: gitpod.Dockerfile
 tasks:
   - name: poetry
     before: echo 'export PIP_USER=false' >> ~/.bashrc && source ~/.bashrc
