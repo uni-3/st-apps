@@ -14,11 +14,21 @@ def load_data(url, pages):
     return tabula.read_pdf(url, pages=pages, lattice=True)
 
 
+def format_df(df):
+    # セル内改行
+    df.rename(columns=lambda s: ''.join(s.splitlines(), inplace=True))
+
+    # 1列目、2列目のrename
+    df.rename(columns={'': 'row'}, index={'県名': 'Unnamed: 0'}, inplace=True)
+
+    return df
+
 def main():
     for s in sources:
         dfs = load_data(s["url"], s["pages"])
 
         for i, df in enumerate(dfs):
+            df = format_df(df)
             print(df)
             df.to_csv(f'{kinds[i]}{s["filename"]}')
 
