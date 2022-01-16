@@ -16,10 +16,10 @@ def load_data(url, pages):
 
 def format_df(df):
     # セル内改行
-    df.rename(columns=lambda s: ''.join(s.splitlines(), inplace=True))
+    df.rename(columns=lambda s: ''.join(s.splitlines()), inplace=True)
 
     # 1列目、2列目のrename
-    df.rename(columns={'': 'row'}, index={'県名': 'Unnamed: 0'}, inplace=True)
+    df.rename(columns={'Unnamed: 0': '県名'}, inplace=True)
 
     return df
 
@@ -29,7 +29,7 @@ def main():
 
         for i, df in enumerate(dfs):
             df = format_df(df)
-            print(df)
+            print(df.columns)
             df.to_csv(f'{kinds[i]}{s["filename"]}')
 
 if __name__ == '__main__':
