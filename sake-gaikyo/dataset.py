@@ -8,7 +8,7 @@ sources = [
         "filename": '_gaiyou_2020.csv',
     }
 ]
-kinds = ['一般酒,' '吟醸酒', '純米酒', '本醸造酒']
+kinds = ['一般酒', '吟醸酒', '純米酒', '本醸造酒']
 
 def load_data(url, pages):
     return tabula.read_pdf(url, pages=pages, lattice=True)
