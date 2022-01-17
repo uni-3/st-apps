@@ -4,7 +4,7 @@ import pandas as pd
 import dataset as ds
 
 @st.cache
-def load_data():
+def load_data(loader: ds.Loader):
     return ds.load()
 
 
@@ -24,7 +24,8 @@ def app():
     st.title("app")
 
     # load
-    df = load_data()
+    l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
+    df = l.load()
     st.subheader("download")
     download_button(df)
 
