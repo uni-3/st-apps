@@ -13,10 +13,10 @@ prefs = [
 ]
 
 def main():
-    codes = [gts.geocode(pref, provider='nominatim', user_agent='test') for pref in prefs]
-    # ジオコーディング結果と元のポイントを比較
-    print(prefs)
-    print(codes)
+    codes = gts.geocode(pref, provider='nominatim', user_agent='test')
+    # GeoJSONを出力
+    outpath = './prefs.geojson'
+    codes.to_file(outpath, driver='GeoJSON', encoding='utf-8')
 
 
 if __name__ == '__main__':
