@@ -90,3 +90,6 @@ wcwidth==0.2.5; python_full_version >= "3.6.2" and python_version >= "3.7"
 webencodings==0.5.1; python_version >= "3.7"
 widgetsnbextension==3.5.2; python_version >= "3.7"
 zipp==3.7.0; python_version < "3.9" and python_version >= "3.7"
+
+geopandas
+geopy
