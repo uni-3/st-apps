@@ -13,7 +13,7 @@ prefs = [
 ]
 
 def main():
-    codes = gts.geocode(pref, provider='nominatim', user_agent='test')
+    codes = gts.geocode(prefs, provider='nominatim', user_agent='test')
     # GeoJSONを出力
     outpath = './prefs.geojson'
     codes.to_file(outpath, driver='GeoJSON', encoding='utf-8')
