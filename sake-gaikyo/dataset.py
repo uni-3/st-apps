@@ -29,20 +29,22 @@ class Loader_PDF(Loader):
         df = pd.DataFrame()
         for s in self.sources:
             for i, df_kind in enumerate(self.fetch(s["url"], s["pages"])):
-                df_kind = self.format_df(df_kind)
+                df_kind = self.format(df_kind)
                 df_kind["year"] = s["year"]
                 df_kind["kind"] = kinds[i]
                 df = pd.concat([df, df_kind])
+        return df
 
     def fetch(self, url, pages):
         return tabula.io.read_pdf(url, pages=pages, lattice=True)
 
-    def format_df(self, df):
+    def format(self, df):
         # 2列目のrename
         df.rename(columns={'Unnamed: 0': '県名'}, inplace=True)
 
-        # 集計行がいるので削除
+        # 集計行/複数県のデータがいるので削除
         df = df[df['県名'].notnull()]
+        df = df[df['県名'] != "宮崎県・鹿児島県・沖縄県"]
 
         # 表と対応しない列削除
         drop_index_from = df.columns.get_loc("Unnamed: 1")
@@ -69,6 +71,7 @@ class Loader_CSV(Loader):
 def main():
     l = Loader_PDF(sources)
     df = l.load()
+    df.to_csv('./sake-gaikyo/rawdata/test_2020.csv', index=False)
 
 if __name__ == '__main__':
     main()
