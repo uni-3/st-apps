@@ -1,0 +1,6 @@
+[server]
+headless=true
+port="$PORT"
+enableCORS=false
+[theme]
+font="游教科書体,YuKyokasho"
