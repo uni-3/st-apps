@@ -31,8 +31,8 @@ def taste_plot(df):
         light_mean='mean(濃淡度)',
         groupby=['県名']
     ).mark_point(filled=True).encode(
-        x=alt.X('sweet_mean:Q', axis=alt.Axis(title='甘辛度', grid=False)),
-        y=alt.Y('light_mean:Q', axis=alt.Axis(title='濃淡度', grid=False)),
+        x=alt.X('sweet_mean:Q', axis=alt.Axis(title="←辛口  甘口→", grid=False)),
+        y=alt.Y('light_mean:Q', axis=alt.Axis(title='←淡麗  濃醇→', grid=False)),
         tooltip=[
             alt.Tooltip('sweet_mean:Q', title='甘辛度'),
             alt.Tooltip('light_mean:Q', title='濃淡度'),
@@ -62,7 +62,7 @@ def app():
     kinds = df["kind"].unique()
     years = df["year"].unique()
     kind = f1.multiselect("酒種", kinds, kinds)
-    year = f2.multiselect("年", years, years)
+    year = f2.multiselect("調査年", years, years)
 
     df = df[
         (df["kind"].isin(kind)) &
