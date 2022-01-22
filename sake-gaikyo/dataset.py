@@ -63,6 +63,7 @@ class Loader_PDF(Loader):
         # 集計行/複数県のデータがいるので削除
         df = df[df['県名'].notnull()]
         df = df[~df['県名'].str.contains("沖縄県")]
+        df = df[~df['県名'].str.contains("局")]
 
         # セル内改行とスペース削除
         df.rename(columns=lambda s: ''.join(s.splitlines()), inplace=True)

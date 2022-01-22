@@ -1,7 +1,6 @@
 import streamlit as st
 import altair as alt
 import pandas as pd
-
 import dataset as ds
 
 @st.cache
@@ -56,7 +55,8 @@ def timeseries_plot(df, v):
         y=alt.Y(f'mean({v}):Q', axis=alt.Axis(title=v, grid=False)),
         tooltip=[
             alt.Tooltip(f'mean({v}):Q', title=v, format=".2f"),
-        ]
+        ],
+        color=alt.Color("kind:N", title="酒種")
     )
     text = c.mark_text(
         align='center',
@@ -84,8 +84,11 @@ def app():
 
     # load
     #l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
+    data_load_state = st.text('データ取得中...')
     l = ds.Loader_PDF(ds.sources)
     df_raw = load_data(l)
+    data_load_state.text('')
+
 
     # filter1
     st.subheader("都道府県ごとの特徴")
@@ -104,7 +107,7 @@ def app():
 
 
     # time series
-    st.subheader("各値の経年変化")
+    st.subheader("経年変化")
     df = df_raw.copy()
     f3, f4 = st.columns(2)
     kinds = df["kind"].unique()
@@ -120,12 +123,12 @@ def app():
 
     # corr
     st.subheader("各値の相関")
-    st.markdown("**甘辛度、濃淡度は他の数値から算出されるため除外している**")
+    st.markdown("**エキス分、甘辛度、濃淡度は他の数値から算出されるため除外している**")
     df = df_raw.copy()
-    raw_value_cols = ["アルコール分","日本酒度","エキス分","酸度","アミノ酸度"]
+    raw_value_cols = ["アルコール分","日本酒度","酸度","アミノ酸度"]
     df_corr = df[raw_value_cols].corr()
     with pd.option_context('precision', 3):
-        st.dataframe(df_corr.style.background_gradient(axis=None), 600, 400)
+        st.dataframe(df_corr.style.background_gradient(axis=None), 500, 400)
 
 
     #pref = df["県名"].unique()
