@@ -6,7 +6,7 @@ import dataset as ds
 
 @st.cache
 def load_data(loader: ds.Loader):
-    return ds.load()
+    return loader.load()
 
 
 def download_button(df):
@@ -34,8 +34,8 @@ def taste_plot(df):
         x=alt.X('sweet_mean:Q', axis=alt.Axis(title="←辛口  甘口→", grid=False)),
         y=alt.Y('light_mean:Q', axis=alt.Axis(title='←淡麗  濃醇→', grid=False)),
         tooltip=[
-            alt.Tooltip('sweet_mean:Q', title='甘辛度'),
-            alt.Tooltip('light_mean:Q', title='濃淡度'),
+            alt.Tooltip('sweet_mean:Q', title='甘辛度', format=".2f"),
+            alt.Tooltip('light_mean:Q', title='濃淡度', format=".2f"),
             '県名'],
     )
 
@@ -51,15 +51,23 @@ def taste_plot(df):
     return c+text
 
 def timeseries_plot(df, v):
-    c = alt.Chart(df).mark_point().encode(
+    c = alt.Chart(df).mark_line(point=True).encode(
         x=alt.X('year:O', axis=alt.Axis(title='調査年', grid=False)),
         y=alt.Y(f'mean({v}):Q', axis=alt.Axis(title=v, grid=False)),
         tooltip=[
-            alt.Tooltip(f'mean({v}):Q', title=v),
+            alt.Tooltip(f'mean({v}):Q', title=v, format=".2f"),
         ]
     )
+    text = c.mark_text(
+        align='center',
+        baseline='middle',
+        dx=5,
+        dy=10
+    ).encode(
+        text=alt.Text(f'mean({v}):Q', format=".2f")
+    )
 
-    return c
+    return c+text
 
 
 def corr_plot(df, values):
@@ -75,8 +83,9 @@ def app():
     st.title("全国市販酒類調査 - 全国の酒成分 -")
 
     # load
-    l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
-    df_raw = l.load()
+    #l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
+    l = ds.Loader_PDF(ds.sources)
+    df_raw = load_data(l)
 
     # filter1
     st.subheader("都道府県ごとの特徴")
@@ -91,7 +100,6 @@ def app():
         (df["kind"].isin(kind)) &
         (df["year"].isin(year))
     ]
-
     st.altair_chart(taste_plot(df), use_container_width=True)
 
 
