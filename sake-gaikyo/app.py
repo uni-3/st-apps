@@ -50,18 +50,41 @@ def taste_plot(df):
 
     return c+text
 
+def timeseries_plot(df, v):
+    c = alt.Chart(df).mark_point().encode(
+        x=alt.X('year:O', axis=alt.Axis(title='調査年', grid=False)),
+        y=alt.Y(f'mean({v}):Q', axis=alt.Axis(title=v, grid=False)),
+        tooltip=[
+            alt.Tooltip(f'mean({v}):Q', title=v),
+        ]
+    )
+
+    return c
+
+
+def corr_plot(df, values):
+    h = alt.Chart(df).mark_rect().encode(
+        x=alt.X(values),
+        y=alt.Y(values)
+    )
+
+    return h
+
+
 def app():
-    st.title("app")
+    st.title("全国市販酒類調査 - 全国の酒成分 -")
 
     # load
     l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
-    df = l.load()
+    df_raw = l.load()
 
     # filter1
+    st.subheader("都道府県ごとの特徴")
+    df = df_raw.copy()
     f1, f2 = st.columns(2)
     kinds = df["kind"].unique()
     years = df["year"].unique()
-    kind = f1.multiselect("酒種", kinds, kinds)
+    kind = f1.multiselect("酒類", kinds, kinds)
     year = f2.multiselect("調査年", years, years)
 
     df = df[
@@ -72,11 +95,37 @@ def app():
     st.altair_chart(taste_plot(df), use_container_width=True)
 
 
-    pref = df["県名"].unique()
-    prefs = st.multiselect("都道府県", pref, pref)
+    # time series
+    st.subheader("各値の経年変化")
+    df = df_raw.copy()
+    f3, f4 = st.columns(2)
+    kinds = df["kind"].unique()
+    value_cols = ["アルコール分","日本酒度","エキス分","酸度","アミノ酸度","甘辛度","濃淡度"]
+    value = f3.selectbox("", value_cols)
+    kind = f4.multiselect("", kinds, kinds)
 
-    st.write("download")
+    df = df[
+        (df["kind"].isin(kind))
+    ]
+    st.altair_chart(timeseries_plot(df, value), use_container_width=True)
+
+
+    # corr
+    st.subheader("各値の相関")
+    st.markdown("**甘辛度、濃淡度は他の数値から算出されるため除外している**")
+    df = df_raw.copy()
+    raw_value_cols = ["アルコール分","日本酒度","エキス分","酸度","アミノ酸度"]
+    df_corr = df[raw_value_cols].corr()
+    with pd.option_context('precision', 3):
+        st.dataframe(df_corr.style.background_gradient(axis=None), 600, 400)
+
+
+    #pref = df["県名"].unique()
+    #prefs = st.multiselect("都道府県", pref, pref)
+
+    st.subheader("download")
     download_button(df)
+    st.write("source: https://www.nta.go.jp/taxes/sake/shiori-gaikyo/seibun/06.htm")
 
 if __name__ == '__main__':
     app()

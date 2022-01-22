@@ -12,6 +12,7 @@ tabula-py = "^2.3.0"
 geopandas = "^0.10.2"
 geopy = "^2.2.0"
 scikit-learn = "^1.0.2"
+matplotlib = "^3.5.1"
 
 [tool.poetry.dev-dependencies]
 
