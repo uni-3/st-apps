@@ -1,2 +1,5 @@
 mkdir -p ~/.streamlit/
-cp ./sake-gaikyo/st-config.toml ~/.streamlit/config.toml
+cp ./sake-gaikyo/.streamlit/config.toml ~/.streamlit/config.toml
+echo "\
+port = $PORT\n\
+" >> ~/.streamlit/config.toml
