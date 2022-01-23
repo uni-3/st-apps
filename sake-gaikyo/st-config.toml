@@ -5,3 +5,7 @@ enableCORS=false
 enableXsrfProtection=false
 [theme]
 font="游教科書体,YuKyokasho"
+primaryColor="#6eb52f"
+backgroundColor="#f0f0f5"
+secondaryBackgroundColor="#e0e0ef"
+textColor="#262730"
