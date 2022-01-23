@@ -63,6 +63,7 @@ class Loader_PDF(Loader):
         # 集計行/複数県のデータがいるので削除
         df = df[df['県名'].notnull()]
         df = df[~df['県名'].str.contains("沖縄県")]
+        df = df[~df['県名'].str.contains("全国")]
         df = df[~df['県名'].str.contains("局")]
 
         # セル内改行とスペース削除
@@ -77,6 +78,8 @@ class Loader_PDF(Loader):
         df.drop(
             ["酢酸イソアミル(mg/L)", "カプロン酸エチル(mg/L)"], axis=1, inplace=True, errors='ignore')
 
+        # rename
+        df.rename(columns={"総酸": "酸度"})
         return df
 
 class Loader_CSV(Loader):

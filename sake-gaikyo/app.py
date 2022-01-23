@@ -80,7 +80,7 @@ def corr_plot(df, values):
 
 
 def app():
-    st.title("全国市販酒類調査 - 全国の酒成分 -")
+    st.title("全国市販酒類調査 - 全国の清酒成分比較 -")
 
     # load
     #l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
