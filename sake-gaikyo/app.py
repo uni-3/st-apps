@@ -79,6 +79,12 @@ def corr_plot(df, values):
     return h
 
 
+def map_plot(df, coor):
+    """
+    https://docs.streamlit.io/library/api-reference/charts/st.pydeck_chart
+    """
+    pass
+
 def app():
     st.title("全国市販酒類調査 - 全国の清酒成分比較 -")
 
