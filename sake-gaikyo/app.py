@@ -2,18 +2,12 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 import dataset as ds
-import geopandas
 import matplotlib.pyplot as plt
 
 
 @st.cache
 def load_data(loader: ds.Loader):
     return loader.load()
-
-
-@st.cache
-def load_map():
-    return geopandas.read_file('https://raw.githubusercontent.com/dataofjapan/land/master/japan.topojson')
 
 
 def download_button(df):
@@ -93,9 +87,6 @@ def map_plot(df, value_col):
     https://docs.streamlit.io/library/api-reference/charts/st.pydeck_chart
     """
 
-    df_jp = load_map()
-    df_merged = df.merge(df_jp, right_on='nam_ja',
-                         left_on='県名').drop('geometry', axis=1)
     regions = alt.topo_feature(
         'https://raw.githubusercontent.com/dataofjapan/land/master/japan.topojson', 'japan')
 
@@ -104,7 +95,7 @@ def map_plot(df, value_col):
         strokeWidth=0.1
     ).transform_lookup(
         lookup='properties.nam_ja',
-        from_=alt.LookupData(df_merged, '県名', [value_col])
+        from_=alt.LookupData(df, '県名', [value_col])
     ).encode(
         tooltip=[
             alt.Tooltip('properties.nam_ja:N', title='県名'),
