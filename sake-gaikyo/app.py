@@ -2,10 +2,18 @@ import streamlit as st
 import altair as alt
 import pandas as pd
 import dataset as ds
+import geopandas
+import matplotlib.pyplot as plt
+
 
 @st.cache
 def load_data(loader: ds.Loader):
     return loader.load()
+
+
+@st.cache
+def load_map():
+    return geopandas.read_file('https://raw.githubusercontent.com/dataofjapan/land/master/japan.topojson')
 
 
 def download_button(df):
@@ -18,6 +26,7 @@ def download_button(df):
         "text/csv",
         key='download-csv'
     )
+
 
 def taste_plot(df):
     """
@@ -38,7 +47,6 @@ def taste_plot(df):
             '県名'],
     )
 
-
     text = c.mark_text(
         align='left',
         baseline='middle',
@@ -48,6 +56,7 @@ def taste_plot(df):
     )
 
     return c+text
+
 
 def timeseries_plot(df, v):
     c = alt.Chart(df).mark_line(point=True).encode(
@@ -79,21 +88,44 @@ def corr_plot(df, values):
     return h
 
 
-def map_plot(df, coor):
+def map_plot(df, value_col):
     """
     https://docs.streamlit.io/library/api-reference/charts/st.pydeck_chart
     """
-    pass
+
+    df_jp = load_map()
+    df_merged = df.merge(df_jp, right_on='nam_ja',
+                         left_on='県名').drop('geometry', axis=1)
+    regions = alt.topo_feature(
+        'https://raw.githubusercontent.com/dataofjapan/land/master/japan.topojson', 'japan')
+
+    map = alt.Chart(regions).mark_geoshape(
+        stroke='black',
+        strokeWidth=0.1
+    ).transform_lookup(
+        lookup='properties.nam_ja',
+        from_=alt.LookupData(df_merged, '県名', [value_col])
+    ).encode(
+        tooltip=[
+            alt.Tooltip('properties.nam_ja:N', title='県名'),
+            alt.Tooltip(f'{value_col}:Q', format='.2f')
+        ],
+        color=f'{value_col}:Q',
+    )
+
+    return map
+
 
 def app():
     st.title("全国市販酒類調査 - 全国の清酒成分比較 -")
 
     # load
-    #l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
+    # l = ds.Loader_CSV('./sake-gaikyo/rawdata/test_2020.csv')
     data_load_state = st.text('データ取得中...')
     l = ds.Loader_PDF(ds.sources)
     df_raw = load_data(l)
     data_load_state.text('')
+    value_cols = ["アルコール分", "日本酒度", "エキス分", "酸度", "アミノ酸度", "甘辛度", "濃淡度"]
 
 
     # filter1
@@ -105,19 +137,22 @@ def app():
     kind = f1.multiselect("酒類", kinds, kinds)
     year = f2.multiselect("調査年", years, years)
 
+    # taste
     df = df[
         (df["kind"].isin(kind)) &
         (df["year"].isin(year))
     ]
     st.altair_chart(taste_plot(df), use_container_width=True)
 
+    # map
+    m_value = st.selectbox("値", value_cols)
+    st.altair_chart(map_plot(df, m_value), use_container_width=True)
 
     # time series
     st.subheader("経年変化")
     df = df_raw.copy()
     f3, f4 = st.columns(2)
     kinds = df["kind"].unique()
-    value_cols = ["アルコール分","日本酒度","エキス分","酸度","アミノ酸度","甘辛度","濃淡度"]
     value = f3.selectbox("", value_cols)
     kind = f4.multiselect("", kinds, kinds)
 
@@ -126,23 +161,22 @@ def app():
     ]
     st.altair_chart(timeseries_plot(df, value), use_container_width=True)
 
-
     # corr
     st.subheader("各値の相関")
     st.markdown("**エキス分、甘辛度、濃淡度は他の数値から算出されるため除外している**")
     df = df_raw.copy()
-    raw_value_cols = ["アルコール分","日本酒度","酸度","アミノ酸度"]
+    raw_value_cols = ["アルコール分", "日本酒度", "酸度", "アミノ酸度"]
     df_corr = df[raw_value_cols].corr()
     with pd.option_context('precision', 3):
         st.dataframe(df_corr.style.background_gradient(axis=None), 500, 400)
 
-
-    #pref = df["県名"].unique()
-    #prefs = st.multiselect("都道府県", pref, pref)
+    # pref = df["県名"].unique()
+    # prefs = st.multiselect("都道府県", pref, pref)
 
     st.subheader("download")
     download_button(df)
     st.write("source: https://www.nta.go.jp/taxes/sake/shiori-gaikyo/seibun/06.htm")
+
 
 if __name__ == '__main__':
     app()
