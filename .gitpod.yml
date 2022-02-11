@@ -1,3 +1,4 @@
+---
 #checkoutLocation: "st-apps"
 #workspaceLocation: "."
 github:
@@ -12,10 +13,12 @@ tasks:
   - name: install
     init: pip install --no-deps -r requirements.txt
 
-vscode:
-  extensions:
-    - ms-python.python
 gitConfig:
   alias.st: status
   alias.cm: commit
   core.autocrlf: input
+
+vscode:
+  extensions:
+    - ms-python.python
+    - vscodevim.vim
