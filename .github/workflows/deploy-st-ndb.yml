@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - "sake-gaikyo/**"
+      - "ndb-data/**"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,6 +16,7 @@ jobs:
           heroku_app_name: ${{ env.APP_NAME }}
           heroku_email: ${{ env.EMAIL }}
     env:
-      APP_NAME: "sake-gaikyo"
+      APP_NAME: "st-ndb"
+      APP_BASE: "ndb-data"
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       EMAIL: ${{ secrets.EMAIL }}

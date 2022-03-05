@@ -1,0 +1,22 @@
+name: deploy
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "sake-gaikyo/**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+        with:
+          heroku_api_key: ${{ env.HEROKU_API_KEY }}
+          heroku_app_name: ${{ env.APP_NAME }}
+          heroku_email: ${{ env.EMAIL }}
+    env:
+      APP_NAME: "sake-gaikyo"
+      APP_BASE: "sake-gaikyo"
+      HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      EMAIL: ${{ secrets.EMAIL }}
