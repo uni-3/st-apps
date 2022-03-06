@@ -7,7 +7,7 @@ on:
       - "ndb-data/**"
       - ".github/workflows/deploy-st-ndb.yml"
 jobs:
-  build:
+  push:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
