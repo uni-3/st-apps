@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "ndb-data/**"
+      - ".github/workflows/deploy-st-ndb.yml"
 jobs:
   build:
     runs-on: ubuntu-latest

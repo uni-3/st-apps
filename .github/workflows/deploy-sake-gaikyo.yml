@@ -5,6 +5,7 @@ on:
       - main
     paths:
       - "sake-gaikyo/**"
+      - ".github/workflows/deploy-sake-gaikyo.yml"
 jobs:
   build:
     runs-on: ubuntu-latest
