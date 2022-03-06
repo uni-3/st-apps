@@ -1,4 +1,4 @@
-name: deploy
+name: deploy sake gaikyo
 on:
   push:
     branches:
@@ -17,6 +17,6 @@ jobs:
           heroku_email: ${{ env.EMAIL }}
     env:
       APP_NAME: "sake-gaikyo"
-      APP_BASE: "sake-gaikyo"
+      HD_APP_BASE: "ndb-data" # use in heroku config var
       HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       EMAIL: ${{ secrets.EMAIL }}
