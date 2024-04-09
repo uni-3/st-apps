@@ -181,11 +181,11 @@ def app():
     print("query", query)
     if query:
         data, total = y.search_all(query, threshhold=MAX_SHOW)
-
+        if total == 0 or total is None:
+            st.write(":pleading_face: みつからなかったです 別な検索キーワードで試してね")
+            return
+            
         if data:
-            if total == 0 or total is None:
-                st.write(":pleading_face: みつからなかったです 別な検索キーワードで試してね")
-                return
             if total > MAX_SHOW:
                 st.text(f"*{MAX_SHOW}件まで取得します")
             df = parse_json_to_df(data)
