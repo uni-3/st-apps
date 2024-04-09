@@ -183,7 +183,7 @@ def app():
         data, total = y.search_all(query, threshhold=MAX_SHOW)
 
         if data:
-            if total == 0:
+            if total == 0 or is None:
                 st.write(":pleading_face: みつからなかったです 別な検索キーワードで試してね")
                 return
             if total > MAX_SHOW:
