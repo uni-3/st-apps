@@ -3,9 +3,9 @@ from utils.inmemory_agent import agent
 import asyncio
 import streamlit as st
 
-st.title("In-Memory Agent Page")
+st.title("bigquery search Agent Page")
 
-google_api_key = st.text_input("Enter your Google API Key:", type="password")
+google_api_key = st.text_input("Enter your Google API Key retrieve from google ai studio:", type="password")
 
 with st.form(key='my_form'):
     query = st.text_input("Enter your query:")
@@ -14,7 +14,6 @@ with st.form(key='my_form'):
 if submitted and google_api_key:
     import os
     os.environ["GOOGLE_API_KEY"] = google_api_key
-    #st.success("Google API Key set successfully!")
     if query:
         try:
             res = asyncio.run(agent(query))
