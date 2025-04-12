@@ -15,12 +15,6 @@ if st.button("Submit") and google_api_key:
     if query:
         try:
             res = asyncio.run(agent(query))
-            # response = asyncio.run(call_agent_async(
-            #     query=query,
-            #     runner=st.session_state.runner,
-            #     user_id=st.session_state.user_id,
-            #     session_id=st.session_state.session_id
-            # ))
             st.write("Response:", res)
         except Exception as e:
             st.error(f"An error occurred: {e}")

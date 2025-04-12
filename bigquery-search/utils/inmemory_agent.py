@@ -32,8 +32,37 @@ weather_agent_gpt = None # Initialize to None
 runner_gpt = None      # Initialize runner to None
 
 
+# @title Define the get_weather Tool
+def get_weather(city: str) -> dict:
+    """Retrieves the current weather report for a specified city.
 
-async def main(query: str):
+    Args:
+        city (str): The name of the city (e.g., "New York", "London", "Tokyo").
+
+    Returns:
+        dict: A dictionary containing the weather information.
+              Includes a 'status' key ('success' or 'error').
+              If 'success', includes a 'report' key with weather details.
+              If 'error', includes an 'error_message' key.
+    """
+    # Best Practice: Log tool execution for easier debugging
+    print(f"--- Tool: get_weather called for city: {city} ---")
+    city_normalized = city.lower().replace(" ", "") # Basic input normalization
+
+    # Mock weather data for simplicity
+    mock_weather_db = {
+        "newyork": {"status": "success", "report": "The weather in New York is sunny with a temperature of 25°C."},
+        "london": {"status": "success", "report": "It's cloudy in London with a temperature of 15°C."},
+        "tokyo": {"status": "success", "report": "Tokyo is experiencing light rain and a temperature of 18°C."},
+    }
+
+    # Best Practice: Handle potential errors gracefully within the tool
+    if city_normalized in mock_weather_db:
+        return mock_weather_db[city_normalized]
+    else:
+        return {"status": "error", "error_message": f"Sorry, I don't have weather information for '{city}'."}
+
+async def agent(query: str):
     try:
         weather_agent_gpt = Agent(
             name="weather_agent_gpt",
@@ -71,16 +100,14 @@ async def main(query: str):
             )
         print(f"Runner created for agent '{runner_gpt.agent.name}'.")
 
-        # --- Test the GPT Agent ---
-        print("\n--- Testing GPT Agent ---")
         # Ensure call_agent_async uses the correct runner, user_id, session_id
-        await call_agent_async(query = "What's the weather in Tokyo?",
+        return await call_agent_async(query = query, #"What's the weather in Tokyo?",
                             runner=runner_gpt,
                             user_id=USER_ID_GPT,
                             session_id=SESSION_ID_GPT)
 
     except Exception as e:
-        print(f"❌ Could not create or run GPT agent '{MODEL_GPT_4O}'. Check API Key and model name. Error: {e}")
+        print(f"❌ Could not create or run GPT agent '{MODEL_GEMINI_2_0_FLASH}'. Check API Key and model name. Error: {e}")
 
 
 
@@ -98,7 +125,7 @@ async def call_agent_async(query: str,
 
   # Key Concept: run_async executes the agent logic and yields Events.
   # We iterate through events to find the final answer.
-  async for event in runner.run_async(user_id=USER_ID, session_id=SESSION_ID, new_message=content):
+  async for event in runner.run_async(user_id=user_id, session_id=session_id, new_message=content):
       # You can uncomment the line below to see *all* events during execution
       # print(f"  [Event] Author: {event.author}, Type: {type(event).__name__}, Final: {event.is_final_response()}, Content: {event.content}")
 
@@ -111,5 +138,6 @@ async def call_agent_async(query: str,
              final_response_text = f"Agent escalated: {event.error_message or 'No specific message.'}"
           # Add more checks here if needed (e.g., specific error codes)
           break # Stop processing events once the final response is found
-
   print(f"<<< Agent Response: {final_response_text}")
+  return final_response_text
+

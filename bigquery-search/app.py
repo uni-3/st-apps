@@ -1,7 +1,10 @@
 
+import asyncio
 import streamlit as st
+import pages.agent_page as ap
 from google.oauth2 import service_account
 from google.cloud import bigquery
+from utils.inmemory_agent import call_agent_async, main
 
 # Create API client.
 if "credentials" in st.session_state:
@@ -39,3 +42,11 @@ rows = run_query("SELECT word FROM `bigquery-public-data.samples.shakespeare` LI
 st.write("Some wise words from Shakespeare:")
 for row in rows:
     st.write("✍️ " + row['word'])
+
+st.sidebar.title("Navigation")
+page = st.sidebar.selectbox("Choose a page", ["Home", "Agent"])
+
+if page == "Home":
+    st.write("Welcome to the home page!")
+elif page == "Agent":
+    ap.page()
