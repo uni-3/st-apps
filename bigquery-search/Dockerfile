@@ -11,7 +11,6 @@ ENV UV_COMPILE_BYTECODE=1 \
 COPY uv.lock pyproject.toml ./
 RUN uv sync --frozen --no-install-project --no-dev
 
-#FROM python:3.11-slim
 FROM python:3.12-slim-bookworm
 
 RUN groupadd -r app && useradd -r -g app app
