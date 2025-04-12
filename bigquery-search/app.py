@@ -4,15 +4,24 @@ from google.oauth2 import service_account
 from google.cloud import bigquery
 
 # Create API client.
-uploaded_file = st.file_uploader("Upload your GCP service account credentials", type=['json'])
-
-if uploaded_file is not None:
-    credentials_info = uploaded_file.read()
-    credentials = service_account.Credentials.from_service_account_info(credentials_info)
+if "credentials" in st.session_state:
+    credentials = service_account.Credentials.from_service_account_info(st.session_state.credentials)
     client = bigquery.Client(credentials=credentials)
+    st.write(f"Using credentials from session state. Project ID: {credentials.project_id}")
 else:
-    st.warning("Please upload your GCP service account credentials.")
-    st.stop()
+    uploaded_file = st.file_uploader("Upload your GCP service account credentials", type=['json'])
+
+    if uploaded_file is not None:
+        credentials_info = uploaded_file.read()
+        credentials = service_account.Credentials.from_service_account_info(credentials_info)
+        client = bigquery.Client(credentials=credentials)
+
+        # Save credentials to st.session_state
+        st.session_state.credentials = credentials_info
+        st.success("Credentials uploaded and saved to session state!")
+    else:
+        st.warning("Please upload your GCP service account credentials.")
+        st.stop()
 
 # Perform query.
 # Uses st.cache_data to only rerun when the query changes or after 10 min.
