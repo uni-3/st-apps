@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "google-adk>=0.1.0",
     "google-cloud-bigquery>=3.31.0",
+    "litellm>=1.65.7",
     "streamlit>=1.44.1",
 ]
