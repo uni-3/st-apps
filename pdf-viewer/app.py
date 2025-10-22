@@ -14,9 +14,6 @@ def display_pdf(uploaded_file):
         pdf_contents = uploaded_file.read()
         st.pdf(pdf_contents, height="stretch")
 
-    else:
-        st.write("No PDF file uploaded.")
-
 def main():
     st.title("pdf viewer")
     file = upload_pdf_file()
