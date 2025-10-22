@@ -13,7 +13,7 @@ def display_pdf(uploaded_file):
     if uploaded_file is not None:
         pdf_contents = uploaded_file.read()
         pdf_base64 = base64.b64encode(pdf_contents).decode('utf-8')
-        st.pdf(pdf_base64, height="stretch")
+        st.pdf(pdf_contents, height="stretch")
         #encoded_pdf = f'<embed src="data:application/pdf;base64,{pdf_base64}" width="800" height="600" type="application/pdf">'
         #st.markdown(encoded_pdf, unsafe_allow_html=True)
 
