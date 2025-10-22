@@ -5,8 +5,7 @@ import os
 
 def upload_pdf_file():
     uploaded_file = st.file_uploader("Upload PDF file", type="pdf")
-    if uploaded_file is None:
-        st.write("Please upload a PDF file.")
+
     return uploaded_file
 
 def display_pdf(uploaded_file):
